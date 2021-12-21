@@ -13,8 +13,8 @@ import math
 #--------------Récupération de la carte CLPA------------------------------------------------------------------------------------
 
 #ouverture d'une carte
-filename='CLPA_AU69.jpg' #nom du fichier
-filedir='/Users/cyrian/Desktop/SpéBio1/TIPE/Cartes CLPA/' #emplacement du fichier
+filename='CLPA_AJ65.jpg' #nom du fichier
+filedir='/Users/cyrian/Desktop/SpéBio1/TIPE/Cartes CLPA/' #emplacement du fichier
 imgfile=filedir+filename
 matriceCLPA=np.array(Image.open(imgfile).convert('RGB')) #convertion de la carte en matrice
 ly,lx,bin=matriceCLPA.shape #renvoie la taille de l'image en pixel
@@ -23,10 +23,10 @@ ly,lx,bin=matriceCLPA.shape #renvoie la taille de l'image en pixel
 #recupération des coordonées GPS
 
 
-lat1=45.33147529241 #float(input('lat coin haut gauche=')) #QGIS 
-lon1=6.88558093134 #float(input('lon coin haut gauche='))
-lat2=45.24995851118 #float(input('lat coin bas droit='))
-lon2=7.03268458422 #float(input('lon coin bas droit='))
+lat1=45.95795554778 #float(input('lat coin haut gauche=')) #QGIS 
+lon1=6.48127237609 #float(input('lon coin haut gauche='))
+lat2=45.88692231036#float(input('lat coin bas droit='))
+lon2=6.61231466549 #float(input('lon coin bas droit='))
 largeur=lon2-lon1
 hauteur=lat1-lat2
 
@@ -98,7 +98,7 @@ image.show()
 
 #on prend un point sur 10 pour former la liste coulée
 coulée=[]
-for k in range (0,len(precoulée),60):
+for k in range (0,len(precoulée),20):
     coulée.append(precoulée[k])
 
 print(coulée)
