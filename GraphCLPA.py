@@ -353,7 +353,8 @@ def moypentelongueur(): #compare les moyenne de pente et de longueur entre les c
     moylnf=np.average(lnf)
     moyprd=np.average(prd)
     moyprdf=np.average(prdf)
-    stdpf=np.std(pf)
+    stdpf=np.std(pf) #np.std renvoie l'ecart type des valeurs d'une liste
+    
     stdpnf=np.std(pnf)
     stdlf=np.std(lf)
     stdlnf=np.std(lnf)
