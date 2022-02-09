@@ -20,6 +20,12 @@ masse3=[845,1367,2825,1350,900] #3940 ,2600 , 350 ,660
 angle4=[28,29,29]
 masse4=[1094,1080,890]
 
+angle5=[34,37,36,35,35,34,35,36] #30
+masse5=[990,2318,3463,3220,254,1316,1745,3560] #261
+
+angle6=[36,33,32,35,32,34,33,34]
+masse6=[3750,2165,3135,1689,1436,3670,2318,1453]
+
 def trait(a,m):
     sigma1=np.std(a)
     sigma2=np.std(m)
@@ -35,17 +41,25 @@ dmax = trait(angle,masse)
 d08 = trait(angle2,masse2)
 d04 = trait(angle3,masse3)
 d00 = trait(angle4,masse4)
+dt = trait(angle5,masse5)
+dc = trait(angle6,masse6)
 
 Result=[dmax,d08,d04,d00]
+Result2=[dt,dc]
 
-plt.bar([1300,800,400,0], [k[0]-26 for k in Result], width=300,bottom=26, yerr = [k[1] for k in Result])
-plt.ylabel("angle de départ")
+#plt.bar([1300,800,400,0], [k[0]-26 for k in Result], width=300,bottom=26, yerr = [k[1] for k in Result])
+#plt.ylabel("angle de départ")
+
+plt.bar([0,1], [k[0] for k in Result2], width=0.3,bottom=0, yerr = [k[1] for k in Result2])
+plt.bar([0,1], [k[2] for k in Result2], width=0.3,bottom=0, yerr = [k[3] for k in Result2])
+plt.xticks(color="none")
 
 #plt.bar([1300,800,400,0], [k[2] for k in Result], width=100, bottom=0, yerr = [k[3] for k in Result])
-#plt.ylabel("masse de l'avalanche")
 
-plt.xlabel("nb arbes par hectare")
-#plt.show()
+plt.ylabel("masse de l'avalanche")
+#plt.ylabel("angle de départ")
+#plt.xlabel("nb arbes par hectare")
+plt.show()
 
 
 #----------------------------------Collectifs Celliers---------------------------------------------------
@@ -61,7 +75,7 @@ avg=np.mean(Longueur)
 avg2=np.average(Largeur)
 avg3=np.average(arbres)
 sigma=np.std(Longueur)
-print(avg,avg2,avg3)
+#print(avg,avg2,avg3)
 Y=36*stat.norm.pdf(X,avg,sigma)
 #plt.plot(X,Y)
 #plt.hist((Longueur), bins=bins)
