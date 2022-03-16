@@ -169,10 +169,10 @@ Frd=[0,
 0]
 
 print('nb coulées =',len(Data))
-Fb=[e[0]for e in Data]
-Fm=[e[1]for e in Data]
-Fh=[e[2]for e in Data]
-F=[e[3]for e in Data]
+Fb=[100*e[0]for e in Data]
+Fm=[100*e[1]for e in Data]
+Fh=[100*e[2]for e in Data]
+F=[100*e[3]for e in Data]
 Pente=[e[4]for e in Data]
 Penteh=[e[5]for e in Data]
 Deniv=[e[6]for e in Data]
@@ -196,13 +196,19 @@ def Graph3D(X,Y,Z):
 #Graph3D(Fh,Altmax,Pente)
 
 def Graph(X,Y): 
-    plt.scatter(X, Y)
-    plt.xlabel('X')
-    plt.ylabel('Y')
+    plt.scatter(X,Y)
+    plt.xlabel("Altitude de départ de l'avalanche (m)")
+    plt.ylabel("Pourcentage de surface de l'avalanche boisée")
+    plt.axvline(x=2400,color='red')
+    plt.text(2450,70,s='Altitude limite de la forêt \n                2400m', color='red')
     plt.show()
 
-#Graph(Altmoy,F)
+#Graph(Altmax,F)
+
 #Graph(Altmin,F)
+
+Graph(Altmax,Longueur)
+
 #Graph(F,Longueur)
 #Graph(Fh,Pente)
 #Graph(Altmax,Pente)
@@ -224,16 +230,17 @@ def pente():
     plt.legend(handles,labels)
     plt.show()
 
-pente()
+#pente()
 
 def alt():
-    plt.hist((Altmax,Altmoy,Altmin), bins=[k for k in range(1000,4000,250)], edgecolor='black')
-    plt.xlabel('Altitude')
-    plt.ylabel('nb de coulées')
+    plt.hist((Altmax,Altmoy,Altmin), bins=[k for k in range(1000,4000,200)], edgecolor='black')
+    plt.xlabel('Altitude (m)')
+    plt.ylabel("nombre d'avalanches")
     handles = [plt.Rectangle((0,0),1,1,color=c,ec="k")for c in ['blue','orange','green']]
-    labels= ["Altitude de départ","alt moy","Altiude d'arrivée"]
-    plt.axvline(np.average(Altmoy), color='red')
+    labels= ["Altitude de départ de l'avalanche","Altitude moyenne de l'avalanche","Altitude d'arrivée de l'avalanche"]
+    plt.axvline(x=2400, color='red')
     plt.legend(handles,labels)
+    plt.text(x=2450,y=21,s="Altitude limite de la forêt", color='red')
     plt.show()
 
 #alt()
@@ -250,25 +257,25 @@ def longueur():
 def foret():
     fch=[]
     for k in range (len(Data)):
-        if Fh[k]!=1:
+        if Fh[k]!=100:
             fch.append(0)
         else:
             fch.append(1)
     moyfch=np.average(fch)
     moyfrd=np.average(Frd)
-    errfch=np.std(fch)/np.sqrt(len(fch))
-    errfrd=np.std(Frd)/np.sqrt(len(Frd))
+    errfch=1.96*np.std(fch)/np.sqrt(len(fch))
+    errfrd=1.96*np.std(Frd)/np.sqrt(len(Frd))
     
-    plt.bar(x=[1,3], height=[100*moyfrd,100*moyfch], yerr=[100*errfrd,100*errfch], color=["orange","blue"])
+    plt.bar(x=[1,3], height=[100*moyfrd,100*moyfch], yerr=[100*errfrd,100*errfch], color=["grey","orange"])
     plt.xticks(color='none')
-    handles = [plt.Rectangle((0,0),1,1,color=c,ec="k")for c in ['blue','orange']]
-    labels= ["coulées","Pentes tirées aux hasard"]
+    handles = [plt.Rectangle((0,0),1,1,color=c,ec="k")for c in ['orange','grey']]
+    labels= ["Zones de départ des avalanches","Zones tirées aux hasard"]
     plt.legend(handles,labels)
 
-    plt.ylabel('proportion de zone boisée (%)')
+    plt.ylabel('pourcentage de la surface boisée')
     plt.show()
 
-foret()
+#foret()
 
 
 # --------------------------------------------------------------------------------------------------------
@@ -323,7 +330,7 @@ def compapente(altmin,altmax): #pente en fonction de prop de foret a alt fixée
 #compapente(1500,1750)
 #compapente(1750,2000)
 
-#_____________________________________________________________________________________________________________
+#__________________________________________________________________________________________________________
 
 
 
@@ -335,10 +342,10 @@ def compapente(altmin,altmax): #pente en fonction de prop de foret a alt fixée
 def moypentelongueur(): #compare les moyenne de pente et de longueur entre les coulées sans foret et les coulées 100pourcent foret
     pf,pnf,lf,lnf,prd,prdf = [],[],[],[],[],[]
     for k in range (len(Data)):
-        if F[k]==0 and 0<Altmax[k]<4000: 
+        if Fh[k]==0 and 0<Altmax[k]<2400: 
             pnf.append(Pente[k])
             lnf.append(Longueur[k])
-        elif F[k]==1 and 0<Altmax[k]<4000:
+        elif Fh[k]==100 and 0<Altmax[k]<2400:
             pf.append(Pente[k])
             lf.append(Longueur[k])
     for i in range (len(Frd)):
@@ -353,25 +360,31 @@ def moypentelongueur(): #compare les moyenne de pente et de longueur entre les c
     moylnf=np.average(lnf)
     moyprd=np.average(prd)
     moyprdf=np.average(prdf)
-    stdpf=np.std(pf) #np.std renvoie l'ecart type des valeurs d'une liste
-    
+    stdpf=np.std(pf)
     stdpnf=np.std(pnf)
     stdlf=np.std(lf)
     stdlnf=np.std(lnf)
     stdprd=np.std(prd)
     stdprdf=np.std(prd)
     
-    plt.bar([5,10,15,20],[moyprd,moyprdf,moypnf,moypf], width=2, bottom=0, yerr=[stdprd/np.sqrt(len(prd)),stdprdf/np.sqrt(len(prdf)),stdpnf/np.sqrt(len(pnf)),stdpf/np.sqrt(len(pf))], color=["orange", (0,1,0), "blue", (0,0.6,0)])
-    handles = [plt.Rectangle((0,0),1,1,color=c,ec="k")for c in ["orange", (0,1,0), "blue", (0,0.6,0)]]
-    labels= ["Pentes random", "Pentes random avec foret", "coulées", "coulées avec foret"]
+    plt.bar([5,10],[moypnf-25,moypf-25], width=2, bottom=25, yerr=[1.96*stdpnf/np.sqrt(len(pnf)),1.96*stdpf/np.sqrt(len(pf))], color=["orange", (0.8,0.8,0)])
+    handles = [plt.Rectangle((0,0),1,1,color=c,ec="k")for c in ["orange", (0.8,0.8,0)]]
+    labels= ["Avalanches déclenchées en zone non boisée", "Avalanches déclenchées dans un boisement continu"]
+    
     plt.xticks(color="none")
-    plt.ylabel("pente")
+    plt.ylabel("longueur de l'avalanche (m)")
     plt.legend(handles,labels)
 
 
-    #plt.bar([5,10],[moylnf,moylf], width=2, bottom=0, yerr=[2*stdlnf/np.sqrt(len(lnf)),2*stdlf/np.sqrt(len(lf))])
+    #plt.bar([5,6.5],[moylnf,moylf], width=1, bottom=0, yerr=[1.98*stdlnf/np.sqrt(len(lnf)),1.98*stdlf/np.sqrt(len(lf))], color=["orange", (0.8,0.8,0)])
     
     plt.show()
 
-moypentelongueur()
+#moypentelongueur()
 
+
+c=0
+for e in Altmax:
+    if e <=2400:
+        c+=1
+print (c/127)
