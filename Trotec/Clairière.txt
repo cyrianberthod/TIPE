@@ -1,0 +1,8 @@
+>>Heure d�m.: 20/02/22 23:23:59       Heure fin: 25/02/22 14:43:59
+>>Taux �ch: 60sec
+>>Don. No.: 6681
+>>Alarm T haute: 40 �C   Alarm T bas: -40 �C
+>>RH Alarm H: 100 %RH   RH Alarm bas: 0 %RH
+>>Temp MAX: 26.3 �C @11:28:59 24/02/22  Temp MIN: -6.1 �C @07:28:59 25/02/22  Temp MOY: 2.24 �C
+>>RH MAX: 95.6 %RH @15:32:59 23/02/22  RH MIN: 13.1 %RH @11:31:59 24/02/22  RH MOY: 53.36 %RH
+>>Temp�rat Unit:Celsius
