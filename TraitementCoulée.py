@@ -108,7 +108,7 @@ print(len(coulée))
 
 #données ee d'altitude:
 
-def zpt(x,y): #return l'altitude pour un pt de coordonnées (x,y)    
+def zpt(x,y): #renvoie l'altitude pour un pt de coordonnées (x,y)    
     alt=ee.Image('USGS/SRTMGL1_003')
     u=ee.Geometry.Point(y,x) #longitude,latitude dans l'ordre
     scale=1 #en mètre
@@ -116,26 +116,27 @@ def zpt(x,y): #return l'altitude pour un pt de coordonnées (x,y)
     return z 
 
 
-def recupente(coulée): #nécessaire pour délimiter les 3 tronçons de la coulée
+def recupente(coulée): #renvoie la pente, le dénivelé, la longueur, l'altitude min et l'altitude max
     Lalt=[] #liste des altitudes de chaque point
     for coord in coulée: #trouve zmin et z max
         x,y= coord
         Lalt.append(zpt(x,y))
-    Laltcopy=sorted(Lalt)
-    zmax,zmin=max(Lalt),min(Lalt)
-    deltaz=zmax-zmin
-    z1tiers=int(zmin+(2/3)*deltaz)
-    z1tiers=Laltcopy[int(2*len(Laltcopy)/3)]
-    i,j,k=Lalt.index(zmax),Lalt.index(zmin),Lalt.index(z1tiers)
+    Laltcopy=sorted(Lalt) #trie la liste des alt
+    zmax,zmin=max(Lalt),min(Lalt) #l'altitude min et l'altitude max
+    deltaz=zmax-zmin #le dénivelé
+
+    i,j=Lalt.index(zmax),Lalt.index(zmin) #indices du pt de zmax et du point de zmin
+    
+    #récupération des coordonnées géographiques
     (xmax,ymax)=coulée[i] #x=lat , y=lon
     (xmin,ymin)=coulée[j]
-    (x1tiers,y1tiers)=coulée[k]
+  
     
     deltay=(ymax-ymin)*40000000*math.cos(math.radians(xmin))/360
     deltax=111111*(xmax-xmin)
-    d=(deltay**2+deltax**2)**0.5
+    d=(deltay**2+deltax**2)**0.5  #longueur de la coulée (calcule avec Pythagore)
     
-    pente=math.degrees(math.atan((zmax-zmin)/d)) #calcule la pente de chaque coulée
+    pente=math.degrees(math.atan((zmax-zmin)/d)) #calcule la pente
   
     return (pente,deltaz,d,zmin,zmax) #différence d'altitude 
 
