@@ -13,9 +13,7 @@ import math
 #--------------Récupération de la carte CLPA------------------------------------------------------------------------------------
 
 #ouverture d'une carte
-filename='CLPA_AJ65.jpg' #nom du fichier
-filedir='/Users/cyrian/Desktop/SpéBio1/TIPE/Cartes CLPA/' #emplacement du fichier
-imgfile=filedir+filename
+imgfile=""#lien du chemin d'accès à la carte 
 matriceCLPA=np.array(Image.open(imgfile).convert('RGB')) #convertion de la carte en matrice
 ly,lx,bin=matriceCLPA.shape #renvoie la taille de l'image en pixel
 
@@ -122,37 +120,30 @@ def recupente(coulée): #nécessaire pour délimiter les 3 tronçons de la coul�
     Lalt=[] #liste des altitudes de chaque point
     for coord in coulée: #trouve zmin et z max
         x,y= coord
-        print("alt=",zpt(x,y))
         Lalt.append(zpt(x,y))
     Laltcopy=sorted(Lalt)
     zmax,zmin=max(Lalt),min(Lalt)
     deltaz=zmax-zmin
     z1tiers=int(zmin+(2/3)*deltaz)
     z1tiers=Laltcopy[int(2*len(Laltcopy)/3)]
-    i,j,k=Lalt.index(zmax),Lalt.index(zmin),Lalt.index(z1tiers) #pb si coulée large on a un point du bord de la coulée 
+    i,j,k=Lalt.index(zmax),Lalt.index(zmin),Lalt.index(z1tiers)
     (xmax,ymax)=coulée[i] #x=lat , y=lon
     (xmin,ymin)=coulée[j]
     (x1tiers,y1tiers)=coulée[k]
-    print(x1tiers,y1tiers)
     
     deltay=(ymax-ymin)*40000000*math.cos(math.radians(xmin))/360
     deltax=111111*(xmax-xmin)
-    deltay1tiers=(ymax-y1tiers)*40000000*math.cos(math.radians(x1tiers))/360
-    deltax1tiers=111111*(xmax-x1tiers)
     d=(deltay**2+deltax**2)**0.5
-    d1tiers=(deltay1tiers**2+deltax1tiers**2)**0.5
     
     pente=math.degrees(math.atan((zmax-zmin)/d)) #calcule la pente de chaque coulée
-    pente1tiers=math.degrees(math.atan((zmax-z1tiers)/d1tiers))
-    print("distance=",d)
-    print('pente,pente1tiers,deltaz = ',pente,pente1tiers,deltaz)
-    return (pente,pente1tiers,deltaz,d,zmin,zmax) #différence d'altitude 
+  
+    return (pente,deltaz,d,zmin,zmax) #différence d'altitude 
 
 def analyse(coulée): #renvoie la densité d'arbres par tronçon d'une coulée + dtot + pente
     fnf=ee.ImageCollection("JAXA/ALOS/PALSAR/YEARLY/FNF")
     a1,a2,a3= 0,0,0 #nb arbres par tronçon
     n1,n2,n3=0,0,0 #nb total de pts par tronçon
-    pente,pente1tiers,deltaz,distance,zmin,zmax=recupente(coulée) 
+    pente,deltaz,distance,zmin,zmax=recupente(coulée) 
     div=deltaz/3 #divise la coulée en 3 tronçons
     for coord in coulée:
         x,y=coord
@@ -170,9 +161,7 @@ def analyse(coulée): #renvoie la densité d'arbres par tronçon d'une coulée +
             n3+=1
             if arbreannée[1][-1]==1:
                 a3+=1
-        print('tronçon:',n1,n2,n3)
-    dataCoulée=[a1/n1,a2/n2,a3/n3,(a1+a2+a3)/(n1+n2+n3),pente,pente1tiers,deltaz,distance,zmin,zmax]#(darbre1ertronçon, darbre2emetronçon, darbre3emetronçons,d totale, pente, dénivelé, longueur coulée, alt min, alt max)
+                
+    dataCoulée=[(a1+a2+a3)/(n1+n2+n3),pente,deltaz,distance,zmin,zmax]#(d totale, pente, dénivelé, longueur coulée, alt min, alt max)
 
     return dataCoulée 
-
-print('dataCoulée=',analyse(coulée))
