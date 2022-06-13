@@ -163,6 +163,7 @@ def analyse(coulée): #renvoie la densité d'arbres par tronçon d'une coulée +
             if arbreannée[1][-1]==1:
                 a3+=1
                 
-    dataCoulée=[(a1+a2+a3)/(n1+n2+n3),pente,deltaz,distance,zmin,zmax]#(d totale, pente, dénivelé, longueur coulée, alt min, alt max)
+    dataCoulée=[a1/n1,a2/n2,a3/n3,(a1+a2+a3)/(n1+n2+n3),pente,pente1tiers,deltaz,distance,zmin,zmax]#(darbre1ertronçon, darbre2emetronçon, darbre3emetronçons,d totale, pente, dénivelé, longueur coulée, alt min, alt max)
+
 
     return dataCoulée 
